@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="318" viewBox="0 0 1180 318" font-family="Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#7b8b83"/>
+    </marker>
+    <style>
+      .stg  { font-size:10.5px; fill:#8a978f; font-weight:600; letter-spacing:.4px; }
+      .ttl  { font-size:12px;   fill:#1d3b31; font-weight:700; }
+      .bd   { font-size:10.5px; fill:#55665e; }
+      .dim  { font-size:9.5px;  fill:#95a29b; }
+      .hi   { fill:#244b3d; font-weight:700; }
+      .ct   { font-size:13.5px; fill:#244b3d; font-weight:700; }
+      .nm   { font-size:10.5px; fill:#1d3b31; }
+      .grp  { font-size:9px;    fill:#95a29b; letter-spacing:.3px; }
+      .mono { font-size:9.5px;  fill:#3c5a4e; font-family:'SF Mono',Menlo,Consolas,monospace; }
+      .card { fill:#fff; stroke:#cfdad4; }
+      .arr  { stroke:#7b8b83; stroke-width:1.3; marker-end:url(#a); }
+      .lbl  { font-size:9px; fill:#8a978f; }
+    </style>
+  </defs>
+
+  <!-- 단계 라벨 -->
+  <text class="stg" x="16"  y="13">① 원본 데이터</text>
+  <text class="stg" x="251" y="13">② 해석 · 검증</text>
+  <text class="stg" x="536" y="13">③ 저장</text>
+  <text class="stg" x="766" y="13">④ 조회 API</text>
+  <text class="stg" x="981" y="13">⑤ 지도 화면</text>
+
+  <!-- ① 원본 -->
+  <rect class="card" x="16" y="20" width="205" height="205" rx="6"/>
+  <text class="grp" x="30" y="43">대중교통 3종</text>
+  <line x1="30" y1="48" x2="207" y2="48" stroke="#e3eae6"/>
+  <text class="nm" x="30" y="67">버스정류소</text>       <text class="ct" x="207" y="68" text-anchor="end">11,236</text>
+  <text class="nm" x="30" y="90">따릉이 대여소</text>     <text class="ct" x="207" y="91" text-anchor="end">2,789</text>
+  <text class="nm" x="30" y="113">도시철도 역·노선</text> <text class="ct" x="207" y="114" text-anchor="end">1,094</text>
+  <text class="grp" x="30" y="140">행정 경계 1종</text>
+  <line x1="30" y1="145" x2="207" y2="145" stroke="#e3eae6"/>
+  <text class="nm" x="30" y="164">행정동 경계</text>      <text class="ct" x="207" y="165" text-anchor="end">427</text>
+  <text class="dim" x="30" y="195">서울시 · 국가철도공단 · SGIS</text>
+  <text class="dim" x="30" y="209">XLSX · SHP(폴리곤)</text>
+
+  <line class="arr" x1="223" y1="120" x2="247" y2="120"/>
+
+  <!-- ② 해석·검증 -->
+  <rect x="251" y="20" width="255" height="205" rx="6" fill="#f3f8f5" stroke="#a9c2b5"/>
+  <text class="ttl"  x="265" y="43">좌표계 해석</text>
+  <text class="bd"   x="265" y="62">원본 표기 <tspan class="mono">WGS84(EPSG-5179)</tspan></text>
+  <text class="bd"   x="265" y="78">이름·코드 모순 확인</text>
+  <text class="bd"   x="265" y="96">7종 비교 측정 <tspan class="dim">(5181 = 카카오맵)</tspan></text>
+  <text class="mono" x="265" y="112">4326·3857·5179·5186·5181·5174·32652</text>
+  <text class="bd"   x="265" y="130">→ <tspan class="hi">EPSG:4326 저장</tspan> 확정</text>
+
+  <line x1="265" y1="144" x2="492" y2="144" stroke="#c3d5cb" stroke-dasharray="2 3"/>
+
+  <text class="ttl" x="265" y="164">적재 검수</text>
+  <text class="bd"  x="265" y="182">4지표 교차 검사</text>
+  <text class="dim" x="265" y="196">최대간격 · ST_IsSimple · 최근접역 · 시도중앙값</text>
+  <text class="bd"  x="265" y="213">좌표오류 3 · 미검증 노선 8 → <tspan class="hi">기록</tspan></text>
+
+  <line class="arr" x1="508" y1="120" x2="532" y2="120"/>
+
+  <!-- ③ 저장 -->
+  <rect class="card" x="536" y="20" width="200" height="205" rx="6"/>
+  <text class="ttl"  x="550" y="43">PostgreSQL 17.5</text>
+  <text class="ttl"  x="550" y="59">+ PostGIS 3.5.2</text>
+  <text class="mono" x="550" y="82">separated · boundary</text>
+  <text class="mono" x="550" y="97">transit</text>
+  <text class="bd"   x="550" y="121">GiST 공간 인덱스</text>
+  <text class="bd"   x="550" y="138"><tspan class="mono">geometry(4326)</tspan></text>
+  <text class="bd"   x="550" y="164">역 점 → <tspan class="mono">ST_MakeLine</tspan></text>
+  <text class="bd"   x="550" y="181">노선 형상 50건 생성</text>
+  <text class="dim"  x="550" y="207">Docker Compose 로컬 구동</text>
+
+  <line class="arr" x1="738" y1="120" x2="762" y2="120"/>
+  <text class="lbl" x="750" y="112" text-anchor="middle">JDBC</text>
+
+  <!-- ④ API -->
+  <rect class="card" x="766" y="20" width="185" height="205" rx="6"/>
+  <text class="ttl" x="780" y="43">Spring Boot</text>
+  <text class="bd"  x="780" y="66">bbox 레이어 조회</text>
+  <text class="bd"  x="780" y="83"><tspan class="hi">엔드포인트 8종</tspan></text>
+  <text class="bd"  x="780" y="100">GeoJSON 응답</text>
+  <text class="bd"  x="780" y="128">행정동 ∩ 시설점</text>
+  <text class="bd"  x="780" y="145"><tspan class="mono">ST_Contains</tspan></text>
+  <text class="bd"  x="780" y="162">동별 집계</text>
+  <text class="dim" x="780" y="188">서버에서 계산해</text>
+  <text class="dim" x="780" y="202">요약만 내려보냄</text>
+
+  <line class="arr" x1="953" y1="120" x2="977" y2="120"/>
+  <text class="lbl" x="965" y="112" text-anchor="middle">/api</text>
+
+  <!-- ⑤ 화면 -->
+  <rect class="card" x="981" y="20" width="183" height="205" rx="6"/>
+  <text class="ttl" x="995" y="43">React</text>
+  <text class="ttl" x="995" y="59">+ OpenLayers</text>
+  <text class="bd"  x="995" y="82">표시 <tspan class="mono">EPSG:3857</tspan></text>
+  <text class="bd"  x="995" y="110">레이어 토글</text>
+  <text class="bd"  x="995" y="127">동 클릭 → 버스 ·</text>
+  <text class="bd"  x="995" y="144">따릉이 · 지하철 요약</text>
+  <text class="bd"  x="995" y="172">미검증 노선 <tspan class="hi">점선</tspan></text>
+  <text class="dim" x="995" y="193">신뢰도를 화면까지</text>
+  <text class="dim" x="995" y="207">전달</text>
+
+  <!-- 비교 실험 (곁가지) -->
+  <line x1="636" y1="225" x2="636" y2="248" stroke="#c3d5cb" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <rect x="536" y="248" width="415" height="54" rx="6" fill="#fafbfa" stroke="#d6ded9" stroke-dasharray="4 3"/>
+  <text class="ttl" x="550" y="269" fill="#6b7b73">저장 모델 비교 실험</text>
+  <text class="dim" x="676" y="269">조회 API는 이 경로를 쓰지 않음</text>
+  <text class="bd"  x="550" y="289">PostgreSQL 통합 · MongoDB 통합/분리 — 40조건 실측 → <tspan class="hi">분리 모델 채택</tspan></text>
+
+  <text class="dim" x="1164" y="289" text-anchor="end">github.com/bokyeong0405/kamogis</text>
+</svg>
