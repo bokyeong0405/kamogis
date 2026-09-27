@@ -39,10 +39,9 @@
 
 ```sh
 cp .env.example .env     # 비밀번호를 직접 채운다
-set -a; source .env; set +a
 ```
 
-`docker compose`는 같은 디렉터리의 `.env`를 자동으로 읽지만 `mvn`/`java`는 읽지 않는다. 그래서 셸에 먼저 불러온다.
+`docker compose`는 같은 디렉터리의 `.env`를 자동으로 읽는다. `mvn`/`java`는 읽지 않으므로 `./run-api.sh`가 대신 불러오며, 직접 `mvn`을 칠 때만 `set -a; source .env; set +a`가 필요하다.
 
 **2. 원본 데이터.** 저장소에 포함하지 않는다([아래](#데이터-출처와-라이선스) 참조). `data/raw/`에 내려받은 뒤 검증한다.
 
@@ -56,8 +55,13 @@ mvn -f backend/pom.xml exec:java -Dexec.args="validate data/raw"
 docker compose up -d                                   # PostGIS + MongoDB
 mvn -f backend/pom.xml exec:java -Dexec.args="import data/raw --crs=4326"
 mvn -f backend/pom.xml exec:java -Dexec.args="verify data/raw --crs=4326"
-mvn -f backend/pom.xml exec:java -Dexec.mainClass=kr.kamogis.ApiServer
-cd frontend && npm ci && npm run dev                   # http://127.0.0.1:5173
+```
+
+그다음 **터미널 두 개**를 쓴다. 프런트의 Vite dev 서버가 `/api`를 127.0.0.1:58080으로 프록시하므로, 둘 다 떠 있어야 지도에 데이터가 올라온다.
+
+```sh
+./run-api.sh                             # 조회 API, 58080
+cd frontend && npm ci && npm run dev     # 지도, http://127.0.0.1:5173
 ```
 
 행정동과 도시철도는 스키마가 달라 별도 적재 스크립트를 쓴다. 자세한 절차는 각 SQL 파일 상단 주석에 있다.

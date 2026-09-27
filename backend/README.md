@@ -7,6 +7,12 @@ Java 21 CLI로 동일한 서울 공공데이터를 네 모델에 저장하고, S
 ## 조회 API
 
 ```sh
+./run-api.sh
+```
+
+`run-api.sh`는 `.env`를 셸에 불러온 뒤 아래를 실행한다. 환경변수를 이미 export 했다면 직접 쳐도 된다.
+
+```sh
 mvn -f backend/pom.xml compile exec:java -Dexec.mainClass=kr.kamogis.ApiServer
 ```
 
