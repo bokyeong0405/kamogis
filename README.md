@@ -12,7 +12,9 @@
 | 서울 공공자전거(따릉이) 대여소 | 2,789 | `separated.bike_stations` |
 | 서울 행정동 경계 | 427 | `boundary.admin_dongs` |
 | 전국 도시철도 역 | 1,094 | `transit.subway_stations` |
-| 도시철도 노선 형상 | 50 | `transit.subway_lines` |
+| 도시철도 노선 형상 | 50 | `transit.subway_lines` — **역 좌표에서 파생** |
+
+**내려받은 원본은 네 건이고, 마지막 줄은 그중 하나에서 만들어 낸 것이다.** 노선 형상은 역 좌표를 역번호 순으로 이어 `ST_MakeLine`으로 생성한다. 원본에는 선 형상도, 운행 순서를 알려 주는 컬럼(순번·인접역·영업거리)도 없다. 그래서 순서를 무엇을 근거로 정했고 어느 노선은 왜 판단할 수 없었는지를 따로 남겼다 — [도시철도 노선 형상](docs/research/2026-09-26-subway-lines.md). 순서를 신뢰할 수 없는 8개 노선은 `order_verified = false`로 표시해 API 기본 응답에서 빼고 화면에서는 점선으로 그린다.
 
 비교 실험용으로 같은 시설 데이터가 PostgreSQL 통합 테이블(`unified.facilities`)과 MongoDB의 통합·분리 컬렉션에도 들어 있다.
 
