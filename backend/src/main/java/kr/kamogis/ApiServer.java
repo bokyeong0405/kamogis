@@ -223,7 +223,60 @@ public class ApiServer {
             entry.put("facets", breakdown);
             layers.put(def.slug(), entry);
         }
-        return Map.of("dong", dong.get(0), "layers", layers);
+        return Map.of("dong", dong.get(0), "layers", layers, "subway", subwayInDong(admCd));
+    }
+
+    /**
+     * 동 안의 도시철도 역. 시설 레이어와 구조를 공유하지 않는 이유는 두 가지다.
+     * 노선명이 attributes JSON이 아니라 컬럼이고, 환승역이 노선 수만큼 행으로 들어 있어
+     * 행을 그대로 세면 "역 개수"가 되지 않는다(시청역은 1·2호선 2행).
+     * 그래서 역 이름으로 묶고 노선을 모은다. total은 묶은 뒤의 역 수다.
+     */
+    private Map<String, Object> subwayInDong(String admCd) {
+        // 원본은 같은 역을 노선에 따라 다르게 적는다. 분당선은 '강남구청역'인데 7호선은
+        // '강남구청'이다. 이름 그대로 묶으면 한 역이 둘로 보인다.
+        // 그래서 끝의 '역'을 뗀 것을 묶음 키로 쓰되, 뗀 이름을 가진 역이 300 m 안에
+        // 실제로 있을 때만 뗀다. 거리 조건이 없으면 안 된다 — 전국에는 339 km 떨어진
+        // '송정'과 '송정역'이 따로 있고 이런 쌍이 62개 중 13개다. 이름만 맞다고 합치면
+        // 다른 역이 합쳐진다.
+        //
+        // 화면에 쓰는 이름은 묶인 표기 중 긴 쪽이다. load-subway.sql이 (노선,역번호)
+        // 중복에서 긴 표기를 남긴 것과 같은 규칙이다. 짧은 쪽을 고르면 '서울역'이
+        // '서울'로 나온다. 묶는 것도 이름을 고르는 것도 표시할 때만이고,
+        // transit.subway_stations의 원본 역명은 그대로 둔다.
+        //
+        // 정렬은 COLLATE "C"를 쓴다. DB 콜레이션이 en_US.utf8인데 glibc의 이 로케일은
+        // 한글에 쓸 만한 가중치가 없어 사실상 글자 수 순으로 나온다(가방 < 나비 < 하나 < 가나다).
+        // 유니코드 한글 음절 블록(U+AC00~U+D7A3)이 가나다 순으로 배열돼 있어
+        // 코드포인트 순서가 곧 사전 순서다. 한글로만 된 역명·노선명에는 이것으로 충분하다.
+        List<Map<String, Object>> stations = jdbc.query(
+            "WITH in_dong AS ("
+                + " SELECT s.name, s.line_name, s.geom FROM transit.subway_stations s"
+                + " JOIN boundary.admin_dongs d ON d.adm_cd=? AND ST_Contains(d.geom,s.geom))"
+                // 짝은 전체 테이블에서 찾는다. 동 안에서만 찾으면 짝이 경계 밖에 있을 때
+                // 놓친다(삼성2동의 '선정릉역'은 짝인 '선정릉'이 55 m 옆 다른 동에 있다).
+                + ", canon AS ("
+                + " SELECT coalesce((SELECT b.name FROM transit.subway_stations b"
+                + "   WHERE i.name LIKE '%역' AND b.name = left(i.name, length(i.name)-1)"
+                + "     AND ST_DWithin(i.geom::geography, b.geom::geography, 300)"
+                + "   LIMIT 1), i.name) AS key, i.name AS orig, i.line_name"
+                + " FROM in_dong i)"
+                // DISTINCT가 붙은 집계에서는 ORDER BY 식이 인자와 같아야 해서 양쪽에 COLLATE를 준다.
+                + " SELECT (array_agg(orig ORDER BY length(orig) DESC, orig COLLATE \"C\"))[1] AS name,"
+                + "        array_agg(DISTINCT line_name COLLATE \"C\""
+                + "        ORDER BY line_name COLLATE \"C\") AS lines"
+                + " FROM canon GROUP BY key ORDER BY key COLLATE \"C\"",
+            (rs, i) -> {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("name", rs.getString("name"));
+                row.put("lines", List.of((String[]) rs.getArray("lines").getArray()));
+                return row;
+            },
+            admCd);
+        Map<String, Object> out = new LinkedHashMap<>();
+        out.put("total", stations.size());
+        out.put("stations", stations);
+        return out;
     }
 
     private Map<String, Object> facets(Layer def) {

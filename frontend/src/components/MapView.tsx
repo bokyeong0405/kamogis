@@ -109,9 +109,13 @@ type SubwayLineInfo = {
 const layerUrl = (slug: string) => `/api/layers/${slug}`;
 
 type DongFacetCount = { value: string; count: number };
+// 지하철은 layers와 구조가 다릅니다. 환승역이 노선 수만큼 행으로 들어 있어
+// 행을 세면 역 개수가 되지 않으므로, 서버가 역 이름으로 묶어 노선 목록을 함께 보냅니다.
+type DongStation = { name: string; lines: string[] };
 type DongSummary = {
   dong: { adm_cd: string; adm_cd2: string; adm_nm: string; sgg_nm: string; dong_nm: string; area_km2: number };
   layers: Record<string, { total: number; facets: Record<string, DongFacetCount[]> }>;
+  subway: { total: number; stations: DongStation[] };
 };
 
 // 이름표는 동이 구분될 만큼 확대했을 때만 그립니다. EPSG:3857 resolution 25는 대략 zoom 13입니다.
@@ -944,6 +948,32 @@ export default function MapView() {
                     </section>
                   );
                 })}
+                {/* 역은 개수보다 어느 역·어느 노선인지가 쓸모 있어 목록으로 보여줍니다. */}
+                <section className="dong-layer">
+                  <h3>
+                    <span className="layer-dot station-dot" aria-hidden="true" />
+                    지하철역
+                    <b>{dongSummary.subway.total.toLocaleString()}</b>
+                  </h3>
+                  {dongSummary.subway.total === 0 ? (
+                    <p className="dong-empty">이 동에는 없습니다.</p>
+                  ) : (
+                    <ul className="dong-stations">
+                      {dongSummary.subway.stations.map((station) => (
+                        <li key={station.name}>
+                          <span className="station-name">{station.name}</span>
+                          <span className="station-lines">
+                            {station.lines.map((line) => (
+                              <span key={line} className="line-chip" style={{ background: lineColor(line) }}>
+                                {line}
+                              </span>
+                            ))}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
                 <p className="dong-note">동 전체 기준입니다. 지도에 그려진 개수는 화면 범위와 속성 필터에 따라 더 적을 수 있습니다.</p>
               </div>
             ) : (
