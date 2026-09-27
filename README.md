@@ -49,19 +49,14 @@ cp .env.example .env     # 비밀번호를 직접 채운다
 mvn -f backend/pom.xml exec:java -Dexec.args="validate data/raw"
 ```
 
-**3. 적재와 실행.**
+**3. 적재.** 시설 두 종류를 네 모델에 넣고 원본과 대조한다.
 
 ```sh
+set -a; source .env; set +a    # 이 절의 명령들은 전부 환경변수가 필요하다
+
 docker compose up -d                                   # PostGIS + MongoDB
 mvn -f backend/pom.xml exec:java -Dexec.args="import data/raw --crs=4326"
 mvn -f backend/pom.xml exec:java -Dexec.args="verify data/raw --crs=4326"
-```
-
-그다음 **터미널 두 개**를 쓴다. 프런트의 Vite dev 서버가 `/api`를 127.0.0.1:58080으로 프록시하므로, 둘 다 떠 있어야 지도에 데이터가 올라온다.
-
-```sh
-./run-api.sh                             # 조회 API, 58080
-cd frontend && npm ci && npm run dev     # 지도, http://127.0.0.1:5173
 ```
 
 행정동과 도시철도는 스키마가 달라 별도 적재 스크립트를 쓴다. 자세한 절차는 각 SQL 파일 상단 주석에 있다.
@@ -73,6 +68,44 @@ python3 db/postgres/subway-xlsx-to-csv.py data/raw/전체_도시철도역사정�
 docker compose cp /tmp/subway-stations.csv postgres:/tmp/subway-stations.csv
 docker compose exec -T postgres psql -U "$PG_USER" -d "$PG_DB" -v ON_ERROR_STOP=1 < db/postgres/load-subway.sql
 ```
+
+## 띄우고 내리기
+
+| | 포트 | 띄우기 | 내리기 |
+|---|---|---|---|
+| DB (PostGIS·MongoDB) | 55432 · 57017 | `docker compose up -d` | `docker compose stop` |
+| 조회 API | 58080 | `./run-api.sh` | 그 터미널에서 Ctrl+C |
+| 지도 프런트엔드 | 5173 | `cd frontend && npm run dev` | 그 터미널에서 Ctrl+C |
+
+API와 프런트는 **터미널을 따로 쓴다.** 둘 다 포그라운드로 붙어 있어야 로그가 보이고 Ctrl+C로 내릴 수 있다. Vite dev 서버가 `/api`를 127.0.0.1:58080으로 프록시하므로 **둘 다 떠 있어야 지도에 데이터가 올라온다.** 배경지도만 보이고 정류소가 안 찍히면 API가 안 떠 있는 것이다.
+
+```sh
+# 터미널 1
+./run-api.sh
+
+# 터미널 2
+cd frontend && npm ci && npm run dev     # 최초 1회만 npm ci, 이후는 npm run dev
+```
+
+`npm` 대신 `pnpm install` / `pnpm dev`도 된다. 브라우저에서 http://127.0.0.1:5173 을 연다.
+
+터미널을 닫아버려 Ctrl+C를 못 하게 됐다면 포트로 찾아서 끝낸다.
+
+```sh
+lsof -nP -iTCP:58080 -sTCP:LISTEN     # API (java)
+lsof -nP -iTCP:5173  -sTCP:LISTEN     # 프런트 (node)
+kill <PID>
+```
+
+**DB를 내리는 방법은 셋이고 결과가 다르다.** 평소에는 `stop`이면 된다.
+
+```sh
+docker compose stop     # 컨테이너만 정지, 데이터 유지 → docker compose start 로 재개
+docker compose down     # 컨테이너 삭제, 볼륨은 남아 데이터 유지
+docker compose down -v  # 볼륨까지 삭제 — 데이터가 전부 사라진다
+```
+
+`down -v`는 위의 적재 절차를 처음부터 다시 해야 한다. 비밀번호는 **빈 볼륨의 최초 기동에만** 적용되므로, `.env`에서 비밀번호를 바꿨다면 `down -v` 후 재생성해야 반영된다.
 
 API 사용법과 설계 근거는 [backend/README.md](backend/README.md)에 있다.
 
