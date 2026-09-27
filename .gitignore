@@ -1,0 +1,22 @@
+# 자격증명 — .env.example만 커밋한다
+.env
+.env.local
+!.env.example
+
+# 빌드 산출물
+node_modules/
+dist/
+target/
+*.log
+
+# macOS
+.DS_Store
+
+# 로컬 도구 설정
+.claude/settings.local.json
+
+# 원본 데이터는 커밋하지 않는다. 재배포 대신 출처를 남긴다.
+# 파일별 sha256·행수·검증 결과·발견한 오류는 data/raw/manifest.json에 있고,
+# 내려받는 방법은 README.md의 "데이터 출처와 라이선스"에 적었다.
+data/raw/*
+!data/raw/manifest.json

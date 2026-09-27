@@ -1,0 +1,77 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Bitmap Heap Scan",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Relation Name": "bike_stations",
+      "Alias": "bike_stations",
+      "Startup Cost": 133.44,
+      "Total Cost": 34736.40,
+      "Plan Rows": 2748,
+      "Plan Width": 85,
+      "Actual Startup Time": 1.599,
+      "Actual Total Time": 34.991,
+      "Actual Rows": 2747,
+      "Actual Loops": 1,
+      "Filter": "st_intersects(geom, '0103000020E610000001000000050000003333333333B35F40B81E85EB51B842403333333333B35F40D7A3703D0AD742407B14AE47E1CA5F40D7A3703D0AD742407B14AE47E1CA5F40B81E85EB51B842403333333333B35F40B81E85EB51B84240'::geometry)",
+      "Rows Removed by Filter": 1,
+      "Exact Heap Blocks": 101,
+      "Lossy Heap Blocks": 0,
+      "Shared Hit Blocks": 129,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0,
+      "Plans": [
+        {
+          "Node Type": "Bitmap Index Scan",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Index Name": "bike_stations_geom",
+          "Startup Cost": 0.00,
+          "Total Cost": 132.76,
+          "Plan Rows": 2748,
+          "Plan Width": 0,
+          "Actual Startup Time": 1.450,
+          "Actual Total Time": 1.452,
+          "Actual Rows": 2748,
+          "Actual Loops": 1,
+          "Index Cond": "(geom && '0103000020E610000001000000050000003333333333B35F40B81E85EB51B842403333333333B35F40D7A3703D0AD742407B14AE47E1CA5F40D7A3703D0AD742407B14AE47E1CA5F40B81E85EB51B842403333333333B35F40B81E85EB51B84240'::geometry)",
+          "Shared Hit Blocks": 28,
+          "Shared Read Blocks": 0,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0
+        }
+      ]
+    },
+    "Planning": {
+      "Shared Hit Blocks": 0,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning Time": 7.174,
+    "Triggers": [
+    ],
+    "Execution Time": 36.053
+  }
+]

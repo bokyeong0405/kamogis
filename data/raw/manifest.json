@@ -1,0 +1,114 @@
+{
+  "downloaded_on": "2026-09-25",
+  "download_endpoint": "https://datafile.seoul.go.kr/bigfile/iot/inf/nio_download.do?&useCache=false",
+  "method": "POST",
+  "files": [
+    {
+      "path": "bus-stops-20260902.xlsx",
+      "original_filename": "서울시버스정류소위치정보(20260902).xlsx",
+      "source_url": "https://data.seoul.go.kr/dataList/OA-15067/S/1/datasetView.do",
+      "form": {
+        "infId": "OA-15067",
+        "seq": "58",
+        "infSeq": "1",
+        "seqNo": ""
+      },
+      "sha256": "73eb0a5f4fd0f6128237b5e23fa361fd1c6d8a31a83bcee2884e6a48481852bb",
+      "bytes": 741052,
+      "data_rows": 11236,
+      "sheet": "Data",
+      "first_data_row": 2,
+      "id_column": "NODE_ID",
+      "missing_ids": 0,
+      "duplicate_ids": 0,
+      "invalid_numeric_coordinates": 0,
+      "crs_status": "Interpreted as EPSG:4326 by explicit user confirmation on 2026-09-25; numeric coordinates preserved; not an agency correction.",
+      "notes": "Includes 8 Han River pier records. Preserve original ARS_ID strings and stop type.",
+      "original_crs_observation": "Source description says WGS84 (EPSG-5179), which is inconsistent. Numeric range is longitude/latitude-like; CRS requires resolution before spatial import."
+    },
+    {
+      "path": "bike-stations-202606.xlsx",
+      "original_filename": "공공자전거 대여소 정보(26.6월 기준).xlsx",
+      "source_url": "https://data.seoul.go.kr/dataList/OA-13252/F/1/datasetView.do",
+      "form": {
+        "infId": "OA-13252",
+        "seq": "24",
+        "infSeq": "2",
+        "seqNo": ""
+      },
+      "sha256": "a2dcee10a341ac9d6beaf14f83c1e46b38bc96ffc8289340508b01cac0d464f1",
+      "bytes": 290529,
+      "data_rows": 2789,
+      "sheet": "대여소현황",
+      "first_data_row": 6,
+      "id_column": "대여소 번호 (column A)",
+      "missing_ids": 0,
+      "duplicate_ids": 0,
+      "invalid_numeric_coordinates": 0,
+      "crs_status": "Interpreted as EPSG:4326 by explicit user confirmation on 2026-09-25; numeric coordinates preserved; not an agency correction.",
+      "original_crs_observation": "Columns E/F are latitude/longitude. Datum not explicitly established by the inspected workbook headers."
+    },
+    {
+      "path": "bus-stops-columns.xlsx",
+      "original_filename": "컬럼정의_서울시 버스정류소 위치정보.xlsx",
+      "source_url": "https://data.seoul.go.kr/dataList/OA-15067/S/1/datasetView.do",
+      "form": {
+        "infId": "OA-15067",
+        "seq": "31",
+        "infSeq": "1",
+        "seqNo": ""
+      },
+      "sha256": "04d179b155b79f8eecc09748d1da7c10ac5f6d5c2184294414be54f7836cb347",
+      "bytes": 9207,
+      "notes": "Published column definitions differ from the 20260902 workbook headers. No CRS found in the inspected sheet."
+    },
+    {
+      "path": "hangjeongdong-20260701.geojson",
+      "original_filename": "HangJeongDong_ver20260701.geojson",
+      "downloaded_on": "2026-09-26",
+      "source_url": "https://github.com/vuski/admdongkor",
+      "download_url": "https://raw.githubusercontent.com/vuski/admdongkor/master/ver20260701/HangJeongDong_ver20260701.geojson",
+      "version": "ver20260701",
+      "sha256": "c01ef44a0eb00978662ba7a6240ccb1da287fb52abd85104a1758969d391132f",
+      "bytes": 34648875,
+      "data_rows": 3558,
+      "id_column": "properties.adm_cd",
+      "missing_ids": 0,
+      "duplicate_ids": 0,
+      "crs_status": "Declared urn:ogc:def:crs:OGC:1.3:CRS84 (WGS84, longitude/latitude order). Matches this project's 4326 convention; no transform applied.",
+      "license": "CC BY 4.0 (vuski/admdongkor processing) over upstream SGIS data under 공공누리 제1유형. Attribution to SGIS must be preserved in any publication.",
+      "notes": "Loaded subset is sidonm='서울특별시' (427 features) into boundary.admin_dongs. Geometry is generalized: 18,817 vertices total, avg 44 per dong, max 210; area sum 606.68 km2 vs the official ~605.2 km2 (+0.24%). All 427 geometries pass ST_IsValid and ST_IsSimple; 1 adjacent pair overlaps by up to 707.6 m2, a generalization artifact."
+    },
+    {
+      "path": "전체_도시철도역사정보_20260630.xlsx",
+      "original_filename": "전체_도시철도역사정보_20260630.xlsx",
+      "downloaded_on": "2026-09-26",
+      "downloaded_by": "user (portal download requires a JS-driven POST; not scriptable from CLI)",
+      "source_url": "https://www.data.go.kr/data/15013205/standard.do",
+      "dataset_name": "전국도시철도역사정보표준데이터",
+      "provider": "국가철도공단",
+      "data_reference_date": "2026-06-30",
+      "sha256": "cdf1d84a7e5c898b2aacd622783ba8ba9af35c40bee0561dc97d55ce8e063f94",
+      "bytes": 313132,
+      "sheet": "표준데이터 역사",
+      "first_data_row": 2,
+      "data_rows": 1099,
+      "id_column": "역번호 (unique only within 노선번호)",
+      "missing_ids": 0,
+      "duplicate_ids": "5 rows share (노선번호, 역번호); 1,094 survive dedupe",
+      "invalid_numeric_coordinates": 0,
+      "crs_status": "Columns 역위도/역경도 are decimal degrees in WGS84 range; loaded as EPSG:4326 with no transform, matching this project's convention.",
+      "license": "이용허락범위 제한 없음 (verified on the portal page 2026-09-26).",
+      "notes": "Loaded in full (no Seoul filter) into transit.subway_stations, because lines cross the city limit and clipping would break the geometry. Three coordinate errors found and NOT corrected, each surfaced by a different instrument. (1) 경의중앙선 1204 양원역 carries a coordinate ~190 km from its own 도로명주소 (address 서울시 중랑구 송림길 147, coordinate 36.964/129.091 in 경상북도); a same-named station exists on another line. Found because max_gap_m spiked; a per-시도 coordinate-median sweep confirms this is the only cross-province case. (2) 5호선 마곡(0514) sits 7.1 m from 발산(0515); found because ST_IsSimple is false, and swapping the two coordinates restores simplicity, which confirms the cause. (3) 4호선 이촌(0430) sits 14.3 m from 신용산(0429); ST_IsSimple is true here, so it was only caught by a nearest-neighbour ordering check. In all three the 도로명주소 and the coordinate contradict each other, which is as far as the source alone can establish. Note that max_gap_m spiking does NOT imply an ordering fault: 경의중앙선's 190,789 m comes from (1), while its ordering fault alone measures 58,874 m (1220 지평 -> 1251 서울역). 역번호 mixes 3- and 4-digit forms (64 rows are 3-digit), so ordering needs zero-padding. Eight 코레일 line groups are flagged order_verified=false (경의중앙선, 경부선, 경강선, 분당선, 수인선, 경인선, 동해선, 안산과천선). They share one cause: 역번호 is assigned in batches rather than in running order, and no column says where a batch belongs on the line. It surfaces three ways - stations of a later batch must be interleaved one by one into an earlier batch (경부선 1032 신길, 1714 독산, 1729 당정, 1749 서동탄, 1750 광명; also 경인선, 분당선); a whole batch must move as a unit (수인선 1755~1762 belongs between 1877 and 1878; 경의중앙선 merges the 중앙선 and 경의선 families); or the batch is a single station (경강선 1512 성남 stands 669 m from the 2nd station, 동해선 8015 부산원동 stands 868 m from the 7th, 안산과천선 1763 수리산). The last form has no gap in the numbering at all, so a block-structure scan cannot see it. The flag comes from inspecting every large adjacent-station gap, not from a distance threshold: 대경선 왜관–서대구 is a genuine 17.6 km gap while 동해선's 17.7 km is an ordering error, so the two cases overlap in magnitude and cannot be separated numerically."
+    }
+  ],
+  "validation_scope": "Nonempty data rows, source ID missing/duplicates, finite numeric longitude [-180,180] / latitude [-90,90], excluding (0,0). Does not establish geographic accuracy or complete business validation.",
+  "crs_decision": {
+    "interpreted_epsg": 4326,
+    "confirmed_by": "user",
+    "date": "2026-09-25",
+    "rationale": "User confirmed 4326 (WGS84); source 5179 label treated as metadata typo. Not an agency confirmation.",
+    "coordinate_operation": "assign SRID, preserve longitude/latitude numeric values",
+    "record": "docs/research/2026-09-25-crs-decision.md"
+  }
+}
