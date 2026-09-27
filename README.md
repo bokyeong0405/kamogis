@@ -19,15 +19,36 @@
 ## 구성
 
 ```
-브라우저 ── React + OpenLayers (Vite, 5173)
-              │  /api → 프록시
-              ▼
-           Spring Boot 조회 API (58080)   backend/src/.../ApiServer.java
-              │  JDBC
-              ▼
-           PostgreSQL 17.5 + PostGIS 3.5.2 (55432)
-           MongoDB 8.0 (57017) — 비교 실험용
+  브라우저
+     │
+     ▼
+  Vite dev 서버 (5173)  ──  React + OpenLayers 정적 파일을 내려준다
+     │                      그리고 /api로 시작하는 요청만 아래로 대신 보낸다
+     │  HTTP
+     ▼
+  Spring Boot 조회 API (58080)   backend/src/.../ApiServer.java
+     │  JDBC (org.postgresql 드라이버)
+     ▼
+  PostgreSQL 17.5 + PostGIS 3.5.2 (55432, 도커)
+
+
+  Benchmark / StorageLab   backend/src/.../Benchmark.java — CLI, 따로 실행한다
+     │  JDBC              │  mongodb-driver-sync
+     ▼                    ▼
+  PostgreSQL(위와 같음)   MongoDB 8.0 (57017, 도커)
 ```
+
+**프런트는 API 주소를 모른다.** 코드에는 `fetch('/api/layers/bus-stops')`처럼 경로만 있다.
+브라우저는 이걸 자기 출처인 5173으로 보내고, Vite가 `vite.config.ts`의 한 줄로 58080에 대신
+물어봐 답을 돌려준다. 브라우저가 5173에서 58080을 직접 부르면 포트가 달라 다른 출처이므로
+CORS에 막히는데, 프록시는 서버끼리 주고받는 것이라 그 규칙이 적용되지 않는다. API에 CORS
+허용 설정을 넣지 않아도 되는 대신, **개발용이다** — `pnpm build` 결과물을 배포하면 Vite dev
+서버가 없으니 프록시도 없다. 그때는 프런트와 API를 같은 출처에 두거나 앞에 리버스 프록시를 둔다.
+
+**MongoDB는 API가 쓰지 않는다.** 저장 모델 비교 실험에만 쓰고, API 서버는 아예 연결하지
+않도록 `@SpringBootApplication(excludeName = "...MongoAutoConfiguration")`으로 꺼 두었다.
+그래서 지도를 보는 데는 PostgreSQL만 떠 있으면 된다. 참고로 Mongo는 JDBC를 쓰지 않는다 —
+JDBC는 관계형 DB용 자바 표준이고, Mongo는 자체 드라이버로 붙는다.
 
 화면은 레이어 토글, 지도 이동 시 bbox 재조회, 속성 필터 칩, 행정동 클릭 필터와 요약 패널, 좌표계 7종 전환과 오용 재현을 담고 있다.
 
